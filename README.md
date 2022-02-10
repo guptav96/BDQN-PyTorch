@@ -1,2 +1,2 @@
 # BDQN-PyTorch
-BDQN Implementation in PyTorch
+Efficient Exploration through Bayesian Deep-Q Networks.
