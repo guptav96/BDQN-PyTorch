@@ -1,5 +1,5 @@
 #######################################################################
-# Copyright (C) 2022 Vivek Gupta(vivekgupta4909@gmail.com)    #
+# Copyright (C) 2022 Vivek Gupta(vivekgupta4909@gmail.com)            #
 # Permission given to modify the code as long as you keep this        #
 # declaration at the top                                              #
 #######################################################################
@@ -18,10 +18,6 @@ class BDQNActor(BaseActor):
         self.sampled_mean = 0
         self.logger = logger
         self.start()
-
-    def compute_q(self, prediction):
-        q_values = to_np(prediction['q'])
-        return q_values
     
     def update_mean(self, sampled_mean):
         self.sampled_mean = sampled_mean
@@ -97,11 +93,12 @@ class BDQNAgent(BaseAgent):
                 actions = tensor(transitions.action).long()
 
                 with torch.no_grad():
-                    policy_state_rep, q_target =  self.find_state_rep(states, next_states, masks, rewards, actions)
+                    policy_state_rep, y_target =  self.find_state_rep(states, next_states, masks, rewards, actions)
 
+                # can improve by not using a loop
                 for idx in range(batch_size):
                     self.ppt[int(actions[idx]), : , :] += torch.matmul(policy_state_rep[idx].unsqueeze(0).T, policy_state_rep[idx].unsqueeze(0))
-                    self.py[int(actions[idx]), :] += policy_state_rep[idx].T * q_target[idx].item()
+                    self.py[int(actions[idx]), :] += policy_state_rep[idx].T * y_target[idx].item()
 
             for idx in range(self.num_actions):
                 inv = torch.inverse(self.ppt[idx]/self.noise_var + 1/self.prior_var*tensor(torch.eye(self.layer_size)))
