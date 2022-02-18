@@ -8,6 +8,7 @@ import os
 import gym
 import numpy as np
 import torch
+from gym import wrappers
 from gym.spaces.box import Box
 from gym.spaces.discrete import Discrete
 
@@ -17,15 +18,14 @@ from baselines.common.vec_env.subproc_vec_env import SubprocVecEnv, VecEnv
 
 from ..utils import *
 
-
-
 # adapted from https://github.com/ikostrikov/pytorch-a2c-ppo-acktr/blob/master/envs.py
-def make_env(env_id, seed, rank, episode_life=True):
+def make_env(env_id, remark, cbk, seed, rank, episode_life=True):
     def _thunk():
         random_seed(seed)
         env = gym.make(env_id)
         env = make_atari(env_id)
         env.seed(seed + rank)
+        env = wrappers.Monitor(env, "video/" + env_id + "/" + remark, video_callable = cbk, force=True)
         env = OriginalReturnWrapper(env)
         env = wrap_deepmind(env,
                             episode_life=episode_life,
@@ -140,6 +140,8 @@ class DummyVecEnv(VecEnv):
 class Task:
     def __init__(self,
                  name,
+                 remark,
+                 cbk,
                  num_envs=1,
                  single_process=True,
                  log_dir=None,
@@ -149,7 +151,7 @@ class Task:
             seed = np.random.randint(int(1e9))
         if log_dir is not None:
             mkdir(log_dir)
-        envs = [make_env(name, seed, i, episode_life) for i in range(num_envs)]
+        envs = [make_env(name, remark, cbk, seed, i, episode_life) for i in range(num_envs)]
         if single_process:
             Wrapper = DummyVecEnv
         else:

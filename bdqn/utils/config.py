@@ -57,8 +57,8 @@ class Config:
         self.__eval_env = None
         self.log_interval = int(1e3)
         self.save_interval = 1e7
-        self.eval_interval = 1e5
-        self.eval_episodes = 1
+        self.eval_interval = 2e5
+        self.eval_episodes = 10
         self.async_actor = True
         self.tasks = False
         self.replay_type = Config.DEFAULT_REPLAY

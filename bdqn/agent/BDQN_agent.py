@@ -34,7 +34,7 @@ class BDQNActor(BaseActor):
             prediction = self._network(config.state_normalizer(self._state))
         q_values = to_np(torch.matmul(prediction['q'], self.sampled_mean.T))
         if self._total_steps < config.exploration_steps:
-            action = epsilon_greedy(1, q_values)
+            action = np.random.randint(q_values.shape[1], size=q_values.shape[0])
         else:
             action = np.argmax(q_values, axis=-1)
         next_state, reward, done, info = self._task.step(action)
@@ -86,9 +86,10 @@ class BDQNAgent(BaseAgent):
         self.py *= 0
         vark = self.var_k
         if self.total_steps > self.config.exploration_steps:
-            num_samples = 32
-            for _ in range(int(self.target_batch_size/num_samples)):
-                transitions = self.replay.usample(num_samples)
+            batch_size = 32
+            num_iters = int(min(self.target_batch_size, self.total_steps)/batch_size)
+            for _ in range(num_iters):
+                transitions = self.replay.usample(batch_size)
                 states = self.config.state_normalizer(transitions.state)
                 next_states = self.config.state_normalizer(transitions.next_state)
                 masks = tensor(transitions.mask)
@@ -98,7 +99,7 @@ class BDQNAgent(BaseAgent):
                 with torch.no_grad():
                     policy_state_rep, q_target =  self.find_state_rep(states, next_states, masks, rewards, actions)
 
-                for idx in range(num_samples):
+                for idx in range(batch_size):
                     self.ppt[int(actions[idx]), : , :] += torch.matmul(policy_state_rep[idx].unsqueeze(0).T, policy_state_rep[idx].unsqueeze(0))
                     self.py[int(actions[idx]), :] += policy_state_rep[idx].T * q_target[idx].item()
 

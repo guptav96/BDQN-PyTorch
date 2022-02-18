@@ -19,9 +19,9 @@ class NatureConvBody(nn.Module):
         self.fc4 = layer_init(nn.Linear(7 * 7 * 64, self.feature_dim))
 
     def forward(self, x):
-        y = F.relu(self.conv1(x))
-        y = F.relu(self.conv2(y))
-        y = F.relu(self.conv3(y))
+        y = torch.relu(self.bn1(self.conv1(x)))
+        y = torch.relu(self.bn2(self.conv2(y)))
+        y = torch.relu(self.bn3(self.conv3(y)))
         y = y.view(y.size(0), -1)
-        y = F.relu(self.fc4(y))
+        y = torch.relu(self.fc4(y))
         return y

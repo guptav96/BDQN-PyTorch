@@ -102,12 +102,6 @@ class BaseAgent:
     def record_step(self, state):
         raise NotImplementedError
 
-    # For DMControl
-    def record_obs(self, env, dir, steps):
-        env = env.env.envs[0]
-        obs = env.render(mode='rgb_array')
-        imsave('%s/%04d.png' % (dir, steps), obs)
-
 
 class BaseActor(mp.Process):
     STEP = 0
