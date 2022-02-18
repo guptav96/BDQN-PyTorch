@@ -2,7 +2,7 @@
 
 Implementation of [Efficient Exploration through Bayesian Deep-Q Networks](https://arxiv.org/pdf/1802.04412.pdf).
 
-Original Implementation can be found [here](https://github.com/kazizzad/BDQN-MxNet-Gluon).
+Implementation in MxNet can be found [here](https://github.com/kazizzad/BDQN-MxNet-Gluon).
 
 **A Thompson Sampling of deep explorative RL**
 
