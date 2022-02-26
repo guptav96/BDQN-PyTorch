@@ -4,6 +4,8 @@ Implementation of [Efficient Exploration through Bayesian Deep-Q Networks](https
 
 Implementation in MxNet can be found [here](https://github.com/kazizzad/BDQN-MxNet-Gluon).
 
+To see it in practice, update main.py with the desired experiment and run `python main.py`.
+
 **A Thompson Sampling of deep explorative RL**
 
 Bayesian deep Q networks (BDQNs) is an RL method which applies the function approximation capabilities of deep neural networks to problems in reinforcement learning. The model follows the work described in the paper Efficient Exploration through Bayesian Deep Q-Networks, written by Kamyar Azizzadenesheli, Emma Brunskil and, Anima Anankumar.
@@ -37,16 +39,5 @@ The question in linear regression problem is given a bunch of (x,a,y), what *w<s
 
 Given this nice property, at each time step, we can compute the posterior distribution of Q-function. As Thompson Sampling based strategies suggest, we draw a Q-function out of the posterior distribution and act optimally with respect to that for that time step.
 
-**Target Network**
+You can read more about the implementation of the BDQN in the [paper](https://github.com/kazizzad/BDQN-MxNet-Gluon).
 
-In both DDQN and BDQN we assume &#966;<sub>*&#952;*</sub>(&#183;) is paramterized by parameters *&#952;*. Furthermore, the obervation *y* for time step *t* is after seeing the cosequative seqeucen of *x<sub>t</sub>, a<sub>t</sub>, r<sub>t</sub>, x<sub>t+1</sub>*
-
-> *y<sub>t</sub> := r<sub>t</sub> + &#955; Q<sup>target</sup>(x<sub>t+1</sub>,argmax<sub>a'</sub>Q(x<sub>t+1</sub>,a'))*
-
-where Q<sup>target</sup> has same structure of Q, but with paramteters *&#952;<sup>target</sup> and *w<sub>a</sub><sup>target</sup>, for all actions where the target parameters get updated ones in a while.
-
-**Posterior update**
-
-<figure>
-  <img src="images/pos_update.png" alt="BDQN Algorithm"/>
-</figure>
